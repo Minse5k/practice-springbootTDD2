@@ -2,6 +2,7 @@ package com.back.domain.post.post.service;
 
 import com.back.domain.post.post.entity.Post;
 import com.back.domain.post.post.repository.PostRepository;
+import com.back.domain.post.postComment.entity.PostComment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,5 +52,14 @@ public class PostService {
         Post post = postRepository.findById(id).get();
 
         postRepository.delete(post);
+    }
+
+    // 댓글은 항상 글을 통해서 다룬다. (글이 댓글의 "주인")
+    @Transactional
+    public PostComment writeComment(long postId, String content) {
+        Post post = postRepository.findById(postId).get(); // 글이 없으면 404
+
+        // 글의 댓글 목록에 추가만 하면 cascade = PERSIST 덕분에 트랜잭션이 끝날 때 INSERT 된다.
+        return post.addComment(content);
     }
 }

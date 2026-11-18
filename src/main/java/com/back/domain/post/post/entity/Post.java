@@ -28,7 +28,8 @@ public class Post extends BaseEntity { // id, createDate, modifyDate 는 BaseEnt
     //                     (DB 의 post_id 외래키는 post_comment 테이블에 있으므로)
     //                     이 리스트는 "읽기용 거울"이라서 post 테이블에 컬럼이 추가되지 않는다.
     // cascade = REMOVE  : 글을 삭제하면 이 리스트에 있는 댓글들도 JPA 가 먼저 삭제해준다.
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    // cascade = PERSIST : 이 리스트에 새 댓글을 추가하면, 글과 함께 댓글도 저장(INSERT)해준다.
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<PostComment> comments = new ArrayList<>(); // null 대신 빈 리스트로 시작
 
     public Post(String title, String content) {
@@ -41,6 +42,16 @@ public class Post extends BaseEntity { // id, createDate, modifyDate 는 BaseEnt
     public void modify(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    // 댓글 추가 : 양방향 관계의 "양쪽"을 한 번에 맞춰준다.
+    //   new PostComment(this, content) → 댓글 쪽 : comment.post = 이 글   (DB 의 post_id 가 결정됨)
+    //   comments.add(postComment)      → 글 쪽   : 이 글의 댓글 목록에도 추가 (메모리 상의 일관성)
+    public PostComment addComment(String content) {
+        PostComment postComment = new PostComment(this, content);
+        comments.add(postComment);
+
+        return postComment;
     }
 
     // "이 글의" 댓글 중에서 id 가 같은 댓글을 찾는다.
