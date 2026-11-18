@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -178,5 +179,38 @@ class ApiV1PostControllerTest {
 
         // 잘못된 요청이므로 글이 저장되면 안 된다.
         assertThat(postRepository.count()).isEqualTo(postCountBefore);
+    }
+
+    @Test
+    @DisplayName("글 수정 : PUT /api/v1/posts/1 → 200 + 수정 완료 메세지")
+    void t6() throws Exception {
+        long id = 1;
+
+        // 1. 요청 : 수정할 글 번호는 URL 에, 바꿀 내용은 본문(JSON)에
+        ResultActions resultActions = mvc
+                .perform(
+                        put("/api/v1/posts/%d".formatted(id))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "title": "제목 수정",
+                                            "content": "내용 수정"
+                                        }
+                                        """)
+                )
+                .andDo(print());
+
+        // 2. 검증
+        // 성공 응답 형식 : { "resultCode": "200-1", "msg": "1번 글이 수정되었습니다.", "data": null }
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("modify"))
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 글이 수정되었습니다.".formatted(id)));
+
+        // (선택) 실제로 수정되었는지 DB 에서도 확인
+        Post post = postRepository.findById(id).get();
+        assertThat(post.getTitle()).isEqualTo("제목 수정");
+        assertThat(post.getContent()).isEqualTo("내용 수정");
     }
 }
