@@ -30,4 +30,17 @@ public class ApiV1PostCommentController {
                 .map(PostCommentDto::new)
                 .toList();
     }
+
+    @GetMapping("/{id}") // GET /api/v1/posts/{postId}/comments/{id}
+    public PostCommentDto getItem(
+            @PathVariable long postId, // 클래스 URL 의 {postId}
+            @PathVariable long id      // 메서드 URL 의 {id}
+    ) {
+        Post post = postService.findById(postId).get();
+
+        // 글이 없거나, 그 글에 해당 댓글이 없으면 NoSuchElementException → 404
+        PostComment postComment = post.findCommentById(id).get();
+
+        return new PostCommentDto(postComment);
+    }
 }

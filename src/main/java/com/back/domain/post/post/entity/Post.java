@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity // 이 클래스는 DB의 post 테이블과 연결된다.
 @Getter
@@ -40,5 +41,14 @@ public class Post extends BaseEntity { // id, createDate, modifyDate 는 BaseEnt
     public void modify(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    // "이 글의" 댓글 중에서 id 가 같은 댓글을 찾는다.
+    // 다른 글의 댓글 번호를 넣으면 빈 Optional → 남의 글 댓글을 조회할 수 없다.
+    public Optional<PostComment> findCommentById(long id) {
+        return comments
+                .stream()
+                .filter(comment -> comment.getId() == id)
+                .findFirst();
     }
 }
