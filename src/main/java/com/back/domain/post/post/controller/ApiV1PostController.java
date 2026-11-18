@@ -4,6 +4,8 @@ import com.back.domain.post.post.dto.PostDto;
 import com.back.domain.post.post.entity.Post;
 import com.back.domain.post.post.service.PostService;
 import com.back.global.rsData.RsData;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -35,14 +37,18 @@ public class ApiV1PostController {
     // { "title": "...", "content": "..." } → PostWriteReqBody(title, content)
     // 이 컨트롤러에서만 쓰므로 컨트롤러 안에 중첩 record 로 선언
     record PostWriteReqBody(
+            @NotBlank(message = "제목을 입력해주세요.") // null, "", "   " 모두 거부
             String title,
+            @NotBlank(message = "내용을 입력해주세요.")
             String content
     ) {
     }
 
     @PostMapping // POST /api/v1/posts
     @ResponseStatus(HttpStatus.CREATED) // 성공 시 200 대신 201 응답
-    public RsData<PostDto> write(@RequestBody PostWriteReqBody reqBody) { // 요청 본문 JSON → 자바 객체
+    // @Valid : reqBody 에 붙은 검증 규칙(@NotBlank 등)을 실행한다.
+    //          하나라도 어기면 메서드 본문은 실행되지 않고 MethodArgumentNotValidException 이 던져진다.
+    public RsData<PostDto> write(@Valid @RequestBody PostWriteReqBody reqBody) { // 요청 본문 JSON → 자바 객체
         Post post = postService.write(reqBody.title(), reqBody.content());
 
         return new RsData<>(
