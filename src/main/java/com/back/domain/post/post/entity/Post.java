@@ -1,11 +1,17 @@
 package com.back.domain.post.post.entity;
 
+import com.back.domain.post.postComment.entity.PostComment;
 import com.back.global.jpa.entity.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity // 이 클래스는 DB의 post 테이블과 연결된다.
 @Getter
@@ -15,6 +21,14 @@ public class Post extends BaseEntity { // id, createDate, modifyDate 는 BaseEnt
 
     @Column(columnDefinition = "TEXT") // 내용은 길 수 있으므로 VARCHAR(255) 대신 TEXT
     private String content;
+
+    // 글 1개 : 댓글 N개 → "일대다(1:N)"
+    // mappedBy = "post" : 연관관계의 주인은 PostComment.post 필드다.
+    //                     (DB 의 post_id 외래키는 post_comment 테이블에 있으므로)
+    //                     이 리스트는 "읽기용 거울"이라서 post 테이블에 컬럼이 추가되지 않는다.
+    // cascade = REMOVE  : 글을 삭제하면 이 리스트에 있는 댓글들도 JPA 가 먼저 삭제해준다.
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<PostComment> comments = new ArrayList<>(); // null 대신 빈 리스트로 시작
 
     public Post(String title, String content) {
         this.title = title;
