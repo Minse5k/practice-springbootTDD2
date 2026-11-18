@@ -24,4 +24,12 @@ public class PostService {
     public Optional<Post> findById(long id) {
         return postRepository.findById(id);
     }
+
+    @Transactional // 쓰기 작업 → 클래스의 readOnly = true 를 덮어쓴다.
+    public Post write(String title, String content) {
+        Post post = new Post(title, content);
+
+        // IDENTITY 전략은 save() 하는 순간 INSERT 가 실행되어 id 가 바로 채워진다.
+        return postRepository.save(post);
+    }
 }

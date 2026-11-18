@@ -19,8 +19,8 @@ public class GlobalExceptionHandler {
     // (예: Optional 이 비어있는데 .get() 을 호출한 경우 = 데이터가 없음)
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND) // HTTP 상태코드를 404 로 지정 (안 붙이면 200 이 나간다!)
-    public RsData handle(NoSuchElementException ex) {
-        return new RsData(
+    public RsData<Void> handle(NoSuchElementException ex) { // 돌려줄 data 가 없으므로 <Void>
+        return new RsData<>(
                 "404-1",
                 "해당 데이터가 존재하지 않습니다."
         );
