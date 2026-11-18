@@ -66,4 +66,28 @@ class ApiV1PostControllerTest {
                     .andExpect(jsonPath("$[%d].content".formatted(i)).value(post.getContent()));
         }
     }
+
+    @Test
+    @DisplayName("글 단건조회 : GET /api/v1/posts/1 → 1번 글을 응답")
+    void t2() throws Exception {
+        long id = 1;
+
+        // 1. 요청 : URL 경로에 글 번호를 넣는다.
+        ResultActions resultActions = mvc
+                .perform(get("/api/v1/posts/%d".formatted(id)))
+                .andDo(print());
+
+        // 비교 기준이 될 실제 DB 데이터
+        Post post = postRepository.findById(id).get();
+
+        // 2. 검증 : 이번에는 배열이 아니라 객체 하나({ ... })가 응답된다. → $.필드명
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("getItem")) // 다건은 getItems, 단건은 getItem
+                .andExpect(jsonPath("$.id").value(post.getId()))
+                .andExpect(jsonPath("$.createDate").value(startsWith(post.getCreateDate().toString().substring(0, 19))))
+                .andExpect(jsonPath("$.modifyDate").value(startsWith(post.getModifyDate().toString().substring(0, 19))))
+                .andExpect(jsonPath("$.title").value(post.getTitle()))
+                .andExpect(jsonPath("$.content").value(post.getContent()));
+    }
 }
