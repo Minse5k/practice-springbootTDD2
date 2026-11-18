@@ -19,9 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -133,5 +135,36 @@ class ApiV1PostCommentControllerTest {
                 .andExpect(jsonPath("$.data.modifyDate").value(startsWith(postComment.getModifyDate().toString().substring(0, 19))))
                 .andExpect(jsonPath("$.data.postId").value(postId))
                 .andExpect(jsonPath("$.data.content").value("댓글 new"));
+    }
+
+    @Test
+    @DisplayName("댓글 수정 : PUT /api/v1/posts/1/comments/1 → 200 + 수정 완료 메세지")
+    void t4() throws Exception {
+        long postId = 1;
+        long id = 1;
+
+        // 1. 요청
+        ResultActions resultActions = mvc
+                .perform(
+                        put("/api/v1/posts/%d/comments/%d".formatted(postId, id))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "content": "댓글 수정"
+                                        }
+                                        """)
+                )
+                .andDo(print());
+
+        // 2. 검증
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("modify"))
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 댓글이 수정되었습니다.".formatted(id)));
+
+        // (선택) 실제로 수정되었는지 확인
+        PostComment postComment = postCommentRepository.findById(id).get();
+        assertThat(postComment.getContent()).isEqualTo("댓글 수정");
     }
 }
