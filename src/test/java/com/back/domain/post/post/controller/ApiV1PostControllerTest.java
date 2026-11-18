@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -146,5 +147,36 @@ class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.data.modifyDate").value(startsWith(post.getModifyDate().toString().substring(0, 19))))
                 .andExpect(jsonPath("$.data.title").value("제목 new"))
                 .andExpect(jsonPath("$.data.content").value("내용 new"));
+    }
+
+    @Test
+    @DisplayName("글 작성 : 제목 없이 POST /api/v1/posts → 400 + 에러 메세지")
+    void t5() throws Exception {
+        long postCountBefore = postRepository.count(); // 요청 전 글 개수
+
+        // 1. 요청 : 제목을 빈 문자열로 보낸다.
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/posts")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "title": "",
+                                            "content": "내용 new"
+                                        }
+                                        """)
+                )
+                .andDo(print());
+
+        // 2. 검증
+        // 실패 응답 형식 : { "resultCode": "400-1", "msg": "필드명-검증규칙-메세지" }
+        resultActions
+                .andExpect(status().isBadRequest())          // HTTP 400 : "요청이 잘못되었다"
+                .andExpect(handler().methodName("write"))
+                .andExpect(jsonPath("$.resultCode").value("400-1"))
+                .andExpect(jsonPath("$.msg").value("title-NotBlank-제목을 입력해주세요."));
+
+        // 잘못된 요청이므로 글이 저장되면 안 된다.
+        assertThat(postRepository.count()).isEqualTo(postCountBefore);
     }
 }
