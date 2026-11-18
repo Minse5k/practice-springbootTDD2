@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" font-family="Apple SD Gothic Neo, Malgun Gothic, Noto Sans KR, sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+    <marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d93025"/>
+    </marker>
+  </defs>
+  <rect width="960" height="470" fill="#ffffff"/>
+  <text x="480" y="36" text-anchor="middle" font-size="22" font-weight="700" fill="#222">요청이 처리되는 흐름 (3계층 구조)</text>
+
+  <!-- client -->
+  <rect x="20" y="150" width="140" height="90" rx="10" fill="#f1f3f4" stroke="#5f6368" stroke-width="2"/>
+  <text x="90" y="185" text-anchor="middle" font-size="16" font-weight="700" fill="#222">클라이언트</text>
+  <text x="90" y="208" text-anchor="middle" font-size="13" fill="#555">브라우저 / Postman</text>
+  <text x="90" y="226" text-anchor="middle" font-size="13" fill="#555">테스트의 MockMvc</text>
+
+  <!-- controller -->
+  <rect x="210" y="130" width="200" height="130" rx="10" fill="#e1ecfb" stroke="#1a73e8" stroke-width="2"/>
+  <text x="310" y="160" text-anchor="middle" font-size="17" font-weight="700" fill="#1a73e8">Controller</text>
+  <text x="310" y="184" text-anchor="middle" font-size="13" fill="#333">ApiV1PostController</text>
+  <text x="310" y="202" text-anchor="middle" font-size="13" fill="#333">ApiV1PostCommentController</text>
+  <text x="310" y="228" text-anchor="middle" font-size="12" fill="#555">HTTP 요청/응답, @Valid 검증</text>
+  <text x="310" y="246" text-anchor="middle" font-size="12" fill="#555">엔티티 → DTO 변환</text>
+
+  <!-- service -->
+  <rect x="460" y="130" width="190" height="130" rx="10" fill="#e3f4e1" stroke="#1e8e3e" stroke-width="2"/>
+  <text x="555" y="160" text-anchor="middle" font-size="17" font-weight="700" fill="#1e8e3e">Service</text>
+  <text x="555" y="184" text-anchor="middle" font-size="13" fill="#333">PostService</text>
+  <text x="555" y="228" text-anchor="middle" font-size="12" fill="#555">비즈니스 로직</text>
+  <text x="555" y="246" text-anchor="middle" font-size="12" fill="#555">@Transactional</text>
+
+  <!-- repository -->
+  <rect x="700" y="130" width="160" height="130" rx="10" fill="#fef7e0" stroke="#f29900" stroke-width="2"/>
+  <text x="780" y="160" text-anchor="middle" font-size="17" font-weight="700" fill="#b06000">Repository</text>
+  <text x="780" y="184" text-anchor="middle" font-size="13" fill="#333">PostRepository</text>
+  <text x="780" y="202" text-anchor="middle" font-size="13" fill="#333">PostCommentRepository</text>
+  <text x="780" y="236" text-anchor="middle" font-size="12" fill="#555">DB 접근 (JPA)</text>
+
+  <!-- DB -->
+  <ellipse cx="900" cy="335" rx="48" ry="14" fill="#ede7f6" stroke="#673ab7" stroke-width="2"/>
+  <path d="M852,335 L852,395 A48,14 0 0 0 948,395 L948,335" fill="#ede7f6" stroke="#673ab7" stroke-width="2"/>
+  <text x="900" y="372" text-anchor="middle" font-size="15" font-weight="700" fill="#673ab7">H2 DB</text>
+  <text x="900" y="420" text-anchor="middle" font-size="11" fill="#555">dev: 파일 / test: 메모리</text>
+
+  <!-- request arrows -->
+  <line x1="160" y1="180" x2="207" y2="180" stroke="#555" stroke-width="2" marker-end="url(#ah)"/>
+  <line x1="410" y1="180" x2="457" y2="180" stroke="#555" stroke-width="2" marker-end="url(#ah)"/>
+  <line x1="650" y1="180" x2="697" y2="180" stroke="#555" stroke-width="2" marker-end="url(#ah)"/>
+  <path d="M860,230 L900,230 L900,318" fill="none" stroke="#555" stroke-width="2" marker-end="url(#ah)"/>
+  <!-- response arrows -->
+  <line x1="207" y1="215" x2="163" y2="215" stroke="#1a73e8" stroke-width="2" marker-end="url(#ah)"/>
+  <text x="184" y="275" text-anchor="middle" font-size="12" fill="#1a73e8">JSON 응답</text>
+  <text x="184" y="291" text-anchor="middle" font-size="11" fill="#1a73e8">(DTO / RsData)</text>
+
+  <!-- global exception handler -->
+  <rect x="210" y="330" width="440" height="100" rx="10" fill="#fde2e2" stroke="#d93025" stroke-width="2" stroke-dasharray="7 4"/>
+  <text x="430" y="360" text-anchor="middle" font-size="16" font-weight="700" fill="#d93025">GlobalExceptionHandler (@RestControllerAdvice)</text>
+  <text x="430" y="386" text-anchor="middle" font-size="13" fill="#333">NoSuchElementException → 404 {"resultCode":"404-1", ...}</text>
+  <text x="430" y="408" text-anchor="middle" font-size="13" fill="#333">MethodArgumentNotValidException → 400 {"resultCode":"400-1", ...}</text>
+  <path d="M555,260 L555,327" fill="none" stroke="#d93025" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ahr)"/>
+  <text x="565" y="300" font-size="12" fill="#d93025">예외 발생 시</text>
+  <path d="M210,380 L120,380 L120,243" fill="none" stroke="#d93025" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ahr)"/>
+  <text x="128" y="320" font-size="12" fill="#d93025">에러 응답</text>
+</svg>

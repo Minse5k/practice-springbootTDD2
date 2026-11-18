@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="Apple SD Gothic Neo, Malgun Gothic, Noto Sans KR, sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a73e8"/>
+    </marker>
+  </defs>
+  <rect width="960" height="400" fill="#ffffff"/>
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#222">테이블 구조와 샘플 데이터 (글 3개, 댓글 5개)</text>
+
+  <!-- post table -->
+  <text x="40" y="78" font-size="17" font-weight="700" fill="#1a73e8">post (Post 엔티티)</text>
+  <g font-size="14">
+    <rect x="40" y="90" width="330" height="34" fill="#1a73e8"/>
+    <text x="65" y="112" fill="#fff" font-weight="700">id</text>
+    <text x="130" y="112" fill="#fff" font-weight="700">title</text>
+    <text x="240" y="112" fill="#fff" font-weight="700">content</text>
+    <rect x="40" y="124" width="330" height="40" fill="#e8f0fe" stroke="#c6dafc"/>
+    <text x="65" y="149">1</text><text x="130" y="149">제목 1</text><text x="240" y="149">내용 1</text>
+    <rect x="40" y="164" width="330" height="40" fill="#ffffff" stroke="#c6dafc"/>
+    <text x="65" y="189">2</text><text x="130" y="189">제목 2</text><text x="240" y="189">내용 2</text>
+    <rect x="40" y="204" width="330" height="40" fill="#e8f0fe" stroke="#c6dafc"/>
+    <text x="65" y="229">3</text><text x="130" y="229">제목 3</text><text x="240" y="229">내용 3</text>
+  </g>
+  <text x="40" y="266" font-size="12" fill="#777">+ create_date, modify_date (BaseEntity)</text>
+
+  <!-- post_comment table -->
+  <text x="560" y="78" font-size="17" font-weight="700" fill="#1e8e3e">post_comment (PostComment 엔티티)</text>
+  <g font-size="14">
+    <rect x="560" y="90" width="360" height="34" fill="#1e8e3e"/>
+    <text x="585" y="112" fill="#fff" font-weight="700">id</text>
+    <text x="650" y="112" fill="#fff" font-weight="700">content</text>
+    <text x="800" y="112" fill="#fff" font-weight="700">post_id (FK)</text>
+    <rect x="560" y="124" width="360" height="34" fill="#e6f4ea" stroke="#b7e1c1"/>
+    <text x="585" y="146">1</text><text x="650" y="146">댓글 1-1</text><text x="830" y="146" font-weight="700" fill="#1a73e8">1</text>
+    <rect x="560" y="158" width="360" height="34" fill="#ffffff" stroke="#b7e1c1"/>
+    <text x="585" y="180">2</text><text x="650" y="180">댓글 1-2</text><text x="830" y="180" font-weight="700" fill="#1a73e8">1</text>
+    <rect x="560" y="192" width="360" height="34" fill="#e6f4ea" stroke="#b7e1c1"/>
+    <text x="585" y="214">3</text><text x="650" y="214">댓글 1-3</text><text x="830" y="214" font-weight="700" fill="#1a73e8">1</text>
+    <rect x="560" y="226" width="360" height="34" fill="#ffffff" stroke="#b7e1c1"/>
+    <text x="585" y="248">4</text><text x="650" y="248">댓글 2-1</text><text x="830" y="248" font-weight="700" fill="#f29900">2</text>
+    <rect x="560" y="260" width="360" height="34" fill="#e6f4ea" stroke="#b7e1c1"/>
+    <text x="585" y="282">5</text><text x="650" y="282">댓글 2-2</text><text x="830" y="282" font-weight="700" fill="#f29900">2</text>
+  </g>
+
+  <!-- FK arrows -->
+  <path d="M560,141 C470,141 460,144 373,144" fill="none" stroke="#1a73e8" stroke-width="2" marker-end="url(#ah)"/>
+  <path d="M560,175 C470,175 460,148 373,146" fill="none" stroke="#1a73e8" stroke-width="2" marker-end="url(#ah)"/>
+  <path d="M560,209 C470,209 460,152 373,148" fill="none" stroke="#1a73e8" stroke-width="2" marker-end="url(#ah)"/>
+  <path d="M560,243 C470,243 460,186 373,184" fill="none" stroke="#f29900" stroke-width="2" marker-end="url(#ah)"/>
+  <path d="M560,277 C470,277 460,190 373,186" fill="none" stroke="#f29900" stroke-width="2" marker-end="url(#ah)"/>
+
+  <!-- notes -->
+  <rect x="40" y="310" width="880" height="74" rx="8" fill="#f8f9fa" stroke="#dadce0"/>
+  <text x="60" y="336" font-size="14" fill="#333"><tspan font-weight="700">PostComment.post</tspan> : @ManyToOne(LAZY) → DB 에는 post_id 숫자만 저장 (연관관계의 주인)</text>
+  <text x="60" y="362" font-size="14" fill="#333"><tspan font-weight="700">Post.comments</tspan> : @OneToMany(mappedBy = "post", cascade = {PERSIST, REMOVE}, orphanRemoval = true) → 읽기용 거울</text>
+</svg>

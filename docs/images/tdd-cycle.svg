@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" font-family="Apple SD Gothic Neo, Malgun Gothic, Noto Sans KR, sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+  <rect width="900" height="420" fill="#ffffff"/>
+  <text x="450" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#222">TDD 사이클 : Red → Green → Refactor</text>
+
+  <!-- Red -->
+  <circle cx="170" cy="200" r="95" fill="#fde2e2" stroke="#d93025" stroke-width="3"/>
+  <text x="170" y="180" text-anchor="middle" font-size="26" font-weight="700" fill="#d93025">🔴 RED</text>
+  <text x="170" y="210" text-anchor="middle" font-size="15" fill="#333">실패하는 테스트를</text>
+  <text x="170" y="232" text-anchor="middle" font-size="15" fill="#333">먼저 작성한다</text>
+
+  <!-- Green -->
+  <circle cx="450" cy="200" r="95" fill="#e3f4e1" stroke="#1e8e3e" stroke-width="3"/>
+  <text x="450" y="180" text-anchor="middle" font-size="26" font-weight="700" fill="#1e8e3e">🟢 GREEN</text>
+  <text x="450" y="210" text-anchor="middle" font-size="15" fill="#333">테스트를 통과하는</text>
+  <text x="450" y="232" text-anchor="middle" font-size="15" fill="#333">최소한의 코드</text>
+
+  <!-- Refactor -->
+  <circle cx="730" cy="200" r="95" fill="#e1ecfb" stroke="#1a73e8" stroke-width="3"/>
+  <text x="730" y="180" text-anchor="middle" font-size="26" font-weight="700" fill="#1a73e8">🔵 REFACTOR</text>
+  <text x="730" y="210" text-anchor="middle" font-size="15" fill="#333">동작은 그대로,</text>
+  <text x="730" y="232" text-anchor="middle" font-size="15" fill="#333">구조만 개선</text>
+
+  <line x1="268" y1="200" x2="350" y2="200" stroke="#555" stroke-width="2.5" marker-end="url(#ah)"/>
+  <line x1="548" y1="200" x2="630" y2="200" stroke="#555" stroke-width="2.5" marker-end="url(#ah)"/>
+  <path d="M730,298 C730,360 170,360 170,298" fill="none" stroke="#555" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#ah)"/>
+  <text x="450" y="372" text-anchor="middle" font-size="14" fill="#555">다음 요구사항으로 반복</text>
+
+  <text x="170" y="405" text-anchor="middle" font-size="13" fill="#777">예) 006, 009, 011, 013 …</text>
+  <text x="450" y="405" text-anchor="middle" font-size="13" fill="#777">예) 007, 010, 012, 014 …</text>
+  <text x="730" y="405" text-anchor="middle" font-size="13" fill="#777">예) 005 BaseEntity 추출</text>
+</svg>

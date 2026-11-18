@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" font-family="Apple SD Gothic Neo, Malgun Gothic, Noto Sans KR, sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+  <rect width="900" height="300" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="21" font-weight="700" fill="#222">실제 서버 vs MockMvc 테스트</text>
+
+  <!-- row 1 -->
+  <text x="30" y="98" font-size="15" font-weight="700" fill="#5f6368">실제 서버</text>
+  <rect x="130" y="70" width="120" height="46" rx="8" fill="#f1f3f4" stroke="#5f6368"/>
+  <text x="190" y="99" text-anchor="middle" font-size="14">Postman</text>
+  <rect x="300" y="70" width="170" height="46" rx="8" fill="#fef7e0" stroke="#f29900"/>
+  <text x="385" y="91" text-anchor="middle" font-size="14">톰캣</text>
+  <text x="385" y="108" text-anchor="middle" font-size="11" fill="#555">(8080 포트, 네트워크)</text>
+  <rect x="520" y="70" width="160" height="46" rx="8" fill="#e8eaed" stroke="#5f6368"/>
+  <text x="600" y="99" text-anchor="middle" font-size="14">DispatcherServlet</text>
+  <rect x="730" y="70" width="140" height="46" rx="8" fill="#e1ecfb" stroke="#1a73e8"/>
+  <text x="800" y="99" text-anchor="middle" font-size="14">컨트롤러 → DB</text>
+  <line x1="250" y1="93" x2="297" y2="93" stroke="#555" stroke-width="2" marker-end="url(#ah)"/>
+  <line x1="470" y1="93" x2="517" y2="93" stroke="#555" stroke-width="2" marker-end="url(#ah)"/>
+  <line x1="680" y1="93" x2="727" y2="93" stroke="#555" stroke-width="2" marker-end="url(#ah)"/>
+
+  <!-- row 2 -->
+  <text x="30" y="188" font-size="15" font-weight="700" fill="#1e8e3e">MockMvc</text>
+  <rect x="130" y="160" width="120" height="46" rx="8" fill="#e3f4e1" stroke="#1e8e3e"/>
+  <text x="190" y="189" text-anchor="middle" font-size="14">mvc.perform()</text>
+  <rect x="300" y="160" width="170" height="46" rx="8" fill="#ffffff" stroke="#bbb" stroke-dasharray="5 4"/>
+  <text x="385" y="181" text-anchor="middle" font-size="14" fill="#999">톰캣 없음</text>
+  <text x="385" y="198" text-anchor="middle" font-size="11" fill="#999">(메모리 안에서 직접 호출)</text>
+  <rect x="520" y="160" width="160" height="46" rx="8" fill="#e8eaed" stroke="#5f6368"/>
+  <text x="600" y="189" text-anchor="middle" font-size="14">DispatcherServlet</text>
+  <rect x="730" y="160" width="140" height="46" rx="8" fill="#e1ecfb" stroke="#1a73e8"/>
+  <text x="800" y="189" text-anchor="middle" font-size="14">컨트롤러 → DB</text>
+  <path d="M250,183 C330,230 440,230 517,183" fill="none" stroke="#1e8e3e" stroke-width="2.5" marker-end="url(#ah)"/>
+  <line x1="680" y1="183" x2="727" y2="183" stroke="#555" stroke-width="2" marker-end="url(#ah)"/>
+
+  <rect x="130" y="240" width="740" height="44" rx="8" fill="#f8f9fa" stroke="#dadce0"/>
+  <text x="500" y="268" text-anchor="middle" font-size="14" fill="#333">@SpringBootTest 가 스프링 전체(컨트롤러·서비스·리포지터리·DB)를 진짜로 띄우고, MockMvc 는 톰캣 역할만 대신한다.</text>
+</svg>
