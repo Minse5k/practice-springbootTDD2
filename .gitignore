@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### H2 DB 파일 (개발용 로컬 DB는 커밋하지 않는다) ###
+db_dev.mv.db
+db_dev.trace.db
