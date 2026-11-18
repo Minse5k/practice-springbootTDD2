@@ -44,4 +44,12 @@ public class PostService {
         // 트랜잭션 안에서 조회한 엔티티는 JPA가 "관리"하고 있어서,
         // 값이 바뀌면 트랜잭션이 끝날 때 알아서 UPDATE 쿼리를 실행한다. (변경 감지, Dirty Checking)
     }
+
+    @Transactional
+    public void delete(long id) {
+        // 글이 없으면 NoSuchElementException → GlobalExceptionHandler 가 404 응답
+        Post post = postRepository.findById(id).get();
+
+        postRepository.delete(post);
+    }
 }

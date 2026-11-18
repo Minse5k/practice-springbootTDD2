@@ -79,4 +79,14 @@ public class ApiV1PostController {
                 "%d번 글이 수정되었습니다.".formatted(id)
         );
     }
+
+    @DeleteMapping("/{id}") // DELETE /api/v1/posts/1
+    public RsData<Void> delete(@PathVariable long id) { // 삭제는 "무엇을"만 알면 되므로 본문이 없다.
+        postService.delete(id);
+
+        return new RsData<>(
+                "200-1",
+                "%d번 글이 삭제되었습니다.".formatted(id)
+        );
+    }
 }
