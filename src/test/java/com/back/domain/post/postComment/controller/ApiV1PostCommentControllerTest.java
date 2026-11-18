@@ -21,6 +21,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.startsWith;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -166,5 +167,28 @@ class ApiV1PostCommentControllerTest {
         // (선택) 실제로 수정되었는지 확인
         PostComment postComment = postCommentRepository.findById(id).get();
         assertThat(postComment.getContent()).isEqualTo("댓글 수정");
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 : DELETE /api/v1/posts/1/comments/1 → 200 + 삭제 완료 메세지")
+    void t5() throws Exception {
+        long postId = 1;
+        long id = 1;
+        long postCommentCountBefore = postCommentRepository.count();
+
+        // 1. 요청
+        ResultActions resultActions = mvc
+                .perform(delete("/api/v1/posts/%d/comments/%d".formatted(postId, id)))
+                .andDo(print());
+
+        // 2. 검증
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("delete"))
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 댓글이 삭제되었습니다.".formatted(id)));
+
+        // (선택) 실제로 삭제되었는지 확인 : 댓글 개수가 1개 줄었다.
+        assertThat(postCommentRepository.count()).isEqualTo(postCommentCountBefore - 1);
     }
 }
