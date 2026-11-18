@@ -90,4 +90,25 @@ class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.title").value(post.getTitle()))
                 .andExpect(jsonPath("$.content").value(post.getContent()));
     }
+
+    @Test
+    @DisplayName("글 단건조회 : 존재하지 않는 글 GET /api/v1/posts/999999 → 404 + 에러 메세지")
+    void t3() throws Exception {
+        long id = 999_999; // 샘플 데이터에 없는 번호 (_ 는 숫자를 읽기 쉽게 끊어주는 자바 문법)
+
+        // 1. 요청
+        ResultActions resultActions = mvc
+                .perform(get("/api/v1/posts/%d".formatted(id)))
+                .andDo(print());
+
+        // 2. 검증
+        // 실패 응답 형식 : { "resultCode": "404-1", "msg": "해당 데이터가 존재하지 않습니다." }
+        //   resultCode : "HTTP상태코드-세부번호" → 프론트가 상황별로 분기 처리하기 쉽다.
+        //   msg        : 사용자에게 그대로 보여줄 수 있는 메세지
+        resultActions
+                .andExpect(status().isNotFound())             // HTTP 404
+                .andExpect(handler().methodName("getItem"))   // 요청 자체는 getItem 이 받았다.
+                .andExpect(jsonPath("$.resultCode").value("404-1"))
+                .andExpect(jsonPath("$.msg").value("해당 데이터가 존재하지 않습니다."));
+    }
 }
