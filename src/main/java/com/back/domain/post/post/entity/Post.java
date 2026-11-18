@@ -29,7 +29,8 @@ public class Post extends BaseEntity { // id, createDate, modifyDate 는 BaseEnt
     //                     이 리스트는 "읽기용 거울"이라서 post 테이블에 컬럼이 추가되지 않는다.
     // cascade = REMOVE  : 글을 삭제하면 이 리스트에 있는 댓글들도 JPA 가 먼저 삭제해준다.
     // cascade = PERSIST : 이 리스트에 새 댓글을 추가하면, 글과 함께 댓글도 저장(INSERT)해준다.
-    @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    // orphanRemoval = true : 이 리스트에서 빠진 댓글(고아)은 DB 에서도 삭제(DELETE)해준다.
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<PostComment> comments = new ArrayList<>(); // null 대신 빈 리스트로 시작
 
     public Post(String title, String content) {
@@ -52,6 +53,11 @@ public class Post extends BaseEntity { // id, createDate, modifyDate 는 BaseEnt
         comments.add(postComment);
 
         return postComment;
+    }
+
+    // 댓글 삭제 : 목록에서 빼기만 하면 orphanRemoval 덕분에 DB 에서도 삭제된다.
+    public void deleteComment(PostComment postComment) {
+        comments.remove(postComment);
     }
 
     // "이 글의" 댓글 중에서 id 가 같은 댓글을 찾는다.

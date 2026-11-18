@@ -85,4 +85,17 @@ public class ApiV1PostCommentController {
                 "%d번 댓글이 수정되었습니다.".formatted(id)
         );
     }
+
+    @DeleteMapping("/{id}") // DELETE /api/v1/posts/{postId}/comments/{id}
+    public RsData<Void> delete(
+            @PathVariable long postId,
+            @PathVariable long id
+    ) {
+        postService.deleteComment(postId, id);
+
+        return new RsData<>(
+                "200-1",
+                "%d번 댓글이 삭제되었습니다.".formatted(id)
+        );
+    }
 }
