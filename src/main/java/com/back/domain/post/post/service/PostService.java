@@ -32,4 +32,16 @@ public class PostService {
         // IDENTITY 전략은 save() 하는 순간 INSERT 가 실행되어 id 가 바로 채워진다.
         return postRepository.save(post);
     }
+
+    @Transactional
+    public void modify(long id, String title, String content) {
+        // 글이 없으면 NoSuchElementException → GlobalExceptionHandler 가 404 응답
+        Post post = postRepository.findById(id).get();
+
+        post.modify(title, content);
+
+        // save() 를 호출하지 않는다!
+        // 트랜잭션 안에서 조회한 엔티티는 JPA가 "관리"하고 있어서,
+        // 값이 바뀌면 트랜잭션이 끝날 때 알아서 UPDATE 쿼리를 실행한다. (변경 감지, Dirty Checking)
+    }
 }

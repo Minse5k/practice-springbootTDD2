@@ -57,4 +57,26 @@ public class ApiV1PostController {
                 new PostDto(post)
         );
     }
+
+    // 글 수정 요청 본문. 작성과 모양은 같지만, 나중에 수정만의 규칙이 생길 수 있으므로 따로 둔다.
+    record PostModifyReqBody(
+            @NotBlank(message = "제목을 입력해주세요.")
+            String title,
+            @NotBlank(message = "내용을 입력해주세요.")
+            String content
+    ) {
+    }
+
+    @PutMapping("/{id}") // PUT /api/v1/posts/1
+    public RsData<Void> modify( // 돌려줄 data 가 없으므로 RsData<Void>
+            @PathVariable long id,                          // 무엇을 : URL 의 글 번호
+            @Valid @RequestBody PostModifyReqBody reqBody   // 어떻게 : 본문의 새 제목/내용
+    ) {
+        postService.modify(id, reqBody.title(), reqBody.content());
+
+        return new RsData<>(
+                "200-1",
+                "%d번 글이 수정되었습니다.".formatted(id)
+        );
+    }
 }

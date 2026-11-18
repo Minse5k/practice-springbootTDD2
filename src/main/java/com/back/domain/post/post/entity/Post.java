@@ -20,4 +20,11 @@ public class Post extends BaseEntity { // id, createDate, modifyDate 는 BaseEnt
         this.title = title;
         this.content = content;
     }
+
+    // setter 대신 "의미 있는 이름"의 메서드로 수정한다.
+    // → 글을 수정하는 방법은 이 메서드 하나뿐이라는 것이 코드로 드러난다.
+    public void modify(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
