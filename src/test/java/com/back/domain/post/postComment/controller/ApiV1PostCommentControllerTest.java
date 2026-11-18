@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -19,6 +21,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -96,5 +99,39 @@ class ApiV1PostCommentControllerTest {
                 .andExpect(jsonPath("$.modifyDate").value(startsWith(postComment.getModifyDate().toString().substring(0, 19))))
                 .andExpect(jsonPath("$.postId").value(postId))
                 .andExpect(jsonPath("$.content").value(postComment.getContent()));
+    }
+
+    @Test
+    @DisplayName("댓글 작성 : POST /api/v1/posts/1/comments → 201 + 작성된 댓글 정보")
+    void t3() throws Exception {
+        long postId = 1;
+
+        // 1. 요청
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/posts/%d/comments".formatted(postId))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "content": "댓글 new"
+                                        }
+                                        """)
+                )
+                .andDo(print());
+
+        // 비교 기준 : 방금 작성된 댓글 = id 가 가장 큰 댓글
+        PostComment postComment = postCommentRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).getFirst();
+
+        // 2. 검증
+        resultActions
+                .andExpect(status().isCreated())
+                .andExpect(handler().methodName("write"))
+                .andExpect(jsonPath("$.resultCode").value("201-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 댓글이 작성되었습니다.".formatted(postComment.getId())))
+                .andExpect(jsonPath("$.data.id").value(postComment.getId()))
+                .andExpect(jsonPath("$.data.createDate").value(startsWith(postComment.getCreateDate().toString().substring(0, 19))))
+                .andExpect(jsonPath("$.data.modifyDate").value(startsWith(postComment.getModifyDate().toString().substring(0, 19))))
+                .andExpect(jsonPath("$.data.postId").value(postId))
+                .andExpect(jsonPath("$.data.content").value("댓글 new"));
     }
 }
