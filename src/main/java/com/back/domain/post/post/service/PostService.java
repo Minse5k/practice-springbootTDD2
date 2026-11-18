@@ -68,4 +68,12 @@ public class PostService {
 
         return postComment;
     }
+
+    @Transactional
+    public void modifyComment(long postId, long id, String content) {
+        Post post = postRepository.findById(postId).get();          // 글이 없으면 404
+        PostComment postComment = post.findCommentById(id).get();  // 그 글의 댓글이 아니면 404
+
+        postComment.modify(content); // 변경 감지(Dirty Checking) → 트랜잭션 끝날 때 UPDATE
+    }
 }

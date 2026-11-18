@@ -27,4 +27,9 @@ public class PostComment extends BaseEntity {
         this.post = post;
         this.content = content;
     }
+
+    // 글과 마찬가지로 setter 대신 의미 있는 이름의 수정 메서드
+    public void modify(String content) {
+        this.content = content;
+    }
 }

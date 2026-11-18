@@ -65,4 +65,24 @@ public class ApiV1PostCommentController {
                 new PostCommentDto(postComment)
         );
     }
+
+    record PostCommentModifyReqBody(
+            @NotBlank(message = "내용을 입력해주세요.")
+            String content
+    ) {
+    }
+
+    @PutMapping("/{id}") // PUT /api/v1/posts/{postId}/comments/{id}
+    public RsData<Void> modify(
+            @PathVariable long postId,
+            @PathVariable long id,
+            @Valid @RequestBody PostCommentModifyReqBody reqBody
+    ) {
+        postService.modifyComment(postId, id, reqBody.content());
+
+        return new RsData<>(
+                "200-1",
+                "%d번 댓글이 수정되었습니다.".formatted(id)
+        );
+    }
 }
