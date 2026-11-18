@@ -60,6 +60,12 @@ public class PostService {
         Post post = postRepository.findById(postId).get(); // 글이 없으면 404
 
         // 글의 댓글 목록에 추가만 하면 cascade = PERSIST 덕분에 트랜잭션이 끝날 때 INSERT 된다.
-        return post.addComment(content);
+        PostComment postComment = post.addComment(content);
+
+        // 그런데 "끝날 때"까지 기다리면 응답을 만드는 시점에 id 가 0, 날짜가 null 이다.
+        // flush() : 지금까지 쌓인 변경사항(INSERT)을 DB 에 즉시 반영한다. (커밋은 아님!)
+        postRepository.flush();
+
+        return postComment;
     }
 }
