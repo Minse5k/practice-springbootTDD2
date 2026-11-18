@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -110,5 +112,39 @@ class ApiV1PostControllerTest {
                 .andExpect(handler().methodName("getItem"))   // 요청 자체는 getItem 이 받았다.
                 .andExpect(jsonPath("$.resultCode").value("404-1"))
                 .andExpect(jsonPath("$.msg").value("해당 데이터가 존재하지 않습니다."));
+    }
+
+    @Test
+    @DisplayName("글 작성 : POST /api/v1/posts → 201 + 작성된 글 정보")
+    void t4() throws Exception {
+        // 1. 요청 : 이번에는 요청 본문(body)에 JSON 을 담아서 보낸다.
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/posts")
+                                .contentType(MediaType.APPLICATION_JSON) // "본문은 JSON 형식이에요" 라는 헤더
+                                .content("""
+                                        {
+                                            "title": "제목 new",
+                                            "content": "내용 new"
+                                        }
+                                        """) // 텍스트 블록(""" """) : 여러 줄 문자열을 그대로 쓸 수 있다.
+                )
+                .andDo(print());
+
+        // 비교 기준 : 방금 작성된 글 = 가장 최근 글(id 가 가장 큰 글)
+        Post post = postRepository.findAllByOrderByIdDesc().getFirst();
+
+        // 2. 검증
+        // 성공 응답 형식 : { "resultCode": "201-1", "msg": "4번 글이 작성되었습니다.", "data": { 작성된 글 } }
+        resultActions
+                .andExpect(status().isCreated())            // HTTP 201 : "새로운 리소스가 생성되었다"
+                .andExpect(handler().methodName("write"))
+                .andExpect(jsonPath("$.resultCode").value("201-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 글이 작성되었습니다.".formatted(post.getId())))
+                .andExpect(jsonPath("$.data.id").value(post.getId()))
+                .andExpect(jsonPath("$.data.createDate").value(startsWith(post.getCreateDate().toString().substring(0, 19))))
+                .andExpect(jsonPath("$.data.modifyDate").value(startsWith(post.getModifyDate().toString().substring(0, 19))))
+                .andExpect(jsonPath("$.data.title").value("제목 new"))
+                .andExpect(jsonPath("$.data.content").value("내용 new"));
     }
 }
