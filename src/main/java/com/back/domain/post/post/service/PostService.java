@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 // 서비스 : 비즈니스 로직 담당. 컨트롤러와 리포지터리 사이의 중간 다리.
 @Service
@@ -17,5 +18,10 @@ public class PostService {
 
     public List<Post> findAllByOrderByIdDesc() {
         return postRepository.findAllByOrderByIdDesc();
+    }
+
+    // Optional : "글이 있을 수도, 없을 수도 있다"를 타입으로 표현
+    public Optional<Post> findById(long id) {
+        return postRepository.findById(id);
     }
 }
