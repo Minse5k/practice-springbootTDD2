@@ -72,4 +72,29 @@ class ApiV1PostCommentControllerTest {
                     .andExpect(jsonPath("$[%d].content".formatted(i)).value(postComment.getContent()));
         }
     }
+
+    @Test
+    @DisplayName("댓글 단건조회 : GET /api/v1/posts/1/comments/1 → 1번 글의 1번 댓글을 응답")
+    void t2() throws Exception {
+        long postId = 1;
+        long id = 1; // 댓글 번호
+
+        // 1. 요청 : 경로 변수가 2개 (글 번호, 댓글 번호)
+        ResultActions resultActions = mvc
+                .perform(get("/api/v1/posts/%d/comments/%d".formatted(postId, id)))
+                .andDo(print());
+
+        // 비교 기준
+        PostComment postComment = postCommentRepository.findById(id).get();
+
+        // 2. 검증 : 객체 하나 → $.필드명
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("getItem"))
+                .andExpect(jsonPath("$.id").value(postComment.getId()))
+                .andExpect(jsonPath("$.createDate").value(startsWith(postComment.getCreateDate().toString().substring(0, 19))))
+                .andExpect(jsonPath("$.modifyDate").value(startsWith(postComment.getModifyDate().toString().substring(0, 19))))
+                .andExpect(jsonPath("$.postId").value(postId))
+                .andExpect(jsonPath("$.content").value(postComment.getContent()));
+    }
 }
