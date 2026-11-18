@@ -18,6 +18,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.startsWith;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -212,5 +213,28 @@ class ApiV1PostControllerTest {
         Post post = postRepository.findById(id).get();
         assertThat(post.getTitle()).isEqualTo("제목 수정");
         assertThat(post.getContent()).isEqualTo("내용 수정");
+    }
+
+    @Test
+    @DisplayName("글 삭제 : DELETE /api/v1/posts/1 → 200 + 삭제 완료 메세지")
+    void t7() throws Exception {
+        long id = 1; // 1번 글에는 댓글이 3개 달려 있다. (샘플 데이터)
+        long postCountBefore = postRepository.count();
+
+        // 1. 요청 : 본문 없이 URL 만으로 "1번 글을 삭제해줘"
+        ResultActions resultActions = mvc
+                .perform(delete("/api/v1/posts/%d".formatted(id)))
+                .andDo(print());
+
+        // 2. 검증
+        // 성공 응답 형식 : { "resultCode": "200-1", "msg": "1번 글이 삭제되었습니다.", "data": null }
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("delete"))
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 글이 삭제되었습니다.".formatted(id)));
+
+        // (선택) 실제로 삭제되었는지 확인 : 글 개수가 1개 줄었다.
+        assertThat(postRepository.count()).isEqualTo(postCountBefore - 1);
     }
 }
